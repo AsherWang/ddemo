@@ -1,4 +1,6 @@
 from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 
 from img import serializers as CS
@@ -27,6 +29,55 @@ class ArticleViewSet(viewsets.ModelViewSet):
     filterset_fields = {
         'id': ['exact']
     }
+
+    # @action(detail=True, methods=['post'])
+    # def add_image(self, request, pk=None):
+    #     article = self.get_object()
+    #     img_id = request.data['img_id']
+    #     serializer = CS.ImageSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         # create or find a existed one
+    #         md5_str = serializer.validated_data.get('md5')
+    #         new_img = CM.Image.objects.filter(md5=md5_str)
+    #         if(not new_img):
+    #             new_img = serializer.create(serializer.validated_data)
+    #         else:
+    #             new_img = new_img[0]
+    #         article.add_image(new_img)
+    #         article.save()
+    #         return Response({'status': 'img added'})
+    #     else:
+    #         return Response(serializer.errors,
+    #                         status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=True, methods=['post'])
+    def add_image(self, request, pk=None):
+        article = self.get_object()
+        image_id = request.data['image_id']
+        img = CM.Image.objects.filter(id=image_id)
+        if(img):
+            img = img[0]
+            article.add_image(img)
+            article.save()
+            return Response({'status': 'img added'})
+        else:
+            return Response('no image with id %s found' % image_id, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['post'])
+    def remove_image(self, request, pk=None):
+        article = self.get_object()
+        image_id = request.data['image_id']
+        img = CM.Image.objects.filter(id=image_id)
+        if(img):
+            img = img[0]
+            print(img.id)
+            article.remove_image(img)
+            article.save()
+            return Response({'status': 'img removed'})
+        else:
+            return Response('no image with id %s found' % image_id, status=status.HTTP_404_NOT_FOUND)
+
+
+
 class ImageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows countries to be viewed o edited.

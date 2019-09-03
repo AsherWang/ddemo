@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import uuid
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django_filters',
     'imagekit',
+    'django_s3_storage',
     'rest_framework',
     'img'
 ]
@@ -129,3 +131,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# S3 settings.
+
+# AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_ACCESS_KEY_ID = 'AKIA5O6YL5U2W5PC2FS7'
+
+# AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = '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'
+
+AWS_REGION = os.environ.get("AWS_REGION", "ap-northeast-2")
+
+# AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME")
+AWS_S3_BUCKET_NAME = 'ashertest'
+
+AWS_S3_KEY_PREFIX = 'dev/base'
+
+# AWS_S3_BUCKET_NAME_STATIC = os.environ.get("AWS_S3_BUCKET_NAME")
+AWS_S3_BUCKET_NAME_STATIC = 'ashertest'
+
+AWS_S3_KEY_PREFIX_STATIC = 'dev/staic'
+
+DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
+
+STATICFILES_STORAGE = "django_s3_storage.storage.ManifestStaticS3Storage"
